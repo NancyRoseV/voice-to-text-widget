@@ -157,7 +157,7 @@
             font-size: 15px;
             line-height: 1.7;
             color: #2d3436;
-            margin-bottom: 16px;
+            margin-bottom: 4px;
             white-space: pre-wrap;
             word-wrap: break-word;
             transition: border-color 0.3s;
@@ -179,9 +179,18 @@
             font-style: italic;
         }
 
+        .word-count {
+            text-align: right;
+            font-size: 11px;
+            color: #adb5bd;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
         .controls {
             display: flex;
             gap: 10px;
+            margin-bottom: 10px;
         }
 
         .btn {
@@ -236,6 +245,55 @@
             stroke-linejoin: round;
         }
 
+        .format-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .format-toggle label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #555555;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: #dee2e6;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #6366f1;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(18px);
+        }
+
         .toast {
             position: fixed;
             bottom: 24px;
@@ -272,14 +330,6 @@
 
         .error-message.show {
             display: block;
-        }
-
-        .word-count {
-            text-align: right;
-            font-size: 11px;
-            color: #adb5bd;
-            margin-top: 6px;
-            font-weight: 500;
         }
     </style>
 <base target="_blank">
@@ -341,6 +391,12 @@
             <div class="status" id="status">Ready to record</div>
         </div>
 
+        <div class="format-toggle">
+            <label>Auto Punctuation</label>
+            <div class="toggle-switch active" id="punctuationToggle"></div>
+            <label>ON</label>
+        </div>
+
         <div class="transcript-box" id="transcriptBox"></div>
         <div class="word-count" id="wordCount"></div>
 
@@ -369,11 +425,13 @@
             const errorMessage = document.getElementById('errorMessage');
             const toast = document.getElementById('toast');
             const wordCount = document.getElementById('wordCount');
+            const punctuationToggle = document.getElementById('punctuationToggle');
 
             let recognition = null;
             let isRecording = false;
             let finalTranscript = '';
             let interimTranscript = '';
+            let autoPunctuation = true;
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -383,6 +441,60 @@
                 micButton.style.opacity = '0.5';
                 micButton.style.cursor = 'not-allowed';
                 return;
+            }
+
+            // Smart punctuation and formatting
+            function addPunctuation(text) {
+                if (!text.trim()) return text;
+
+                let formatted = text.trim();
+
+                // Capitalize first letter of the entire text
+                formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+
+                // Split into sentences and capitalize each
+                const sentences = formatted.split(/([.!?]+\s*)/);
+                let result = '';
+                let capitalizeNext = false;
+
+                for (let i = 0; i < sentences.length; i++) {
+                    let sentence = sentences[i];
+
+                    if (capitalizeNext && sentence.trim()) {
+                        sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+                        capitalizeNext = false;
+                    }
+
+                    if (/[.!?]+\s*$/.test(sentence)) {
+                        capitalizeNext = true;
+                    }
+
+                    result += sentence;
+                }
+
+                // Add period at the end if missing and text doesn't end with punctuation
+                if (!/[.!?]$/.test(result.trim())) {
+                    result = result.trim() + '.';
+                }
+
+                // Fix common punctuation issues
+                result = result
+                    // Fix multiple spaces
+                    .replace(/\s+/g, ' ')
+                    // Fix space before punctuation
+                    .replace(/\s+([.,!?;:])/g, '$1')
+                    // Fix missing space after punctuation
+                    .replace(/([.,!?;:])([^\s])/g, '$1 $2')
+                    // Capitalize "i" when it's a word
+                    .replace(/i/g, 'I')
+                    // Fix double punctuation
+                    .replace(/([.!?])+/g, '$1')
+                    // Capitalize proper nouns and common names (basic)
+                    .replace(/(john|jane|mary|michael|sarah|david|james|robert|william|richard|joseph|thomas|charles|daniel|matthew|anthony|mark|donald|steven|paul|andrew|kenneth|joshua|kevin|brian|george|edward|ronald|timothy|jason|jeffrey|ryan|jacob|gary|nicholas|eric|jonathan|stephen|larry|justin|scott|brandon|benjamin|samuel|frank|gregory|raymond|alexander|patrick|jack|henry|adam|nathan|zachary|dylan|walter|kyle|roger|joe|juan|louis|carl|vincent|bruce|russell|bobby|victor|martin|ernest|phillip|craig|alan|shawn|philip|chris|johnny|earl|jimmy|antonio|danny|bryan|tony|luis|mike|stanley|leonard|nathaniel|dale|manuel|rodney|curtis|norman|allen|marvin|vincent|glenn|jeffery|travis|fred|bradley|joel|lee|melvin|alfred|kurt|bill|harold|wayne|arthur|jerry|douglas|henry|peter|carl|ryan|ethan|noah|liam|oliver|elijah|james|william|benjamin|lucas|henry|alexander|mason|michael|daniel|jacob|logan|jackson|sebastian|samuel|david|carter|wyatt|jayden|john|owen|dylan|luke|gabriel|anthony|isaac|grayson|jack|julian|levi|christopher|joshua|andrew|lincoln|mateo|ryan|jaxon|nathan|aaron|isaiah|thomas|charles|caleb|josiah|christian|hunter|eli|jonathan|connor|landon|adrian|asher|cameron|leo|theodore|jeremiah|hudson|robert|easton|miles|josiah|colton|ezra|angel|roman|axel|jace|graham|max|leonardo|brooks|nicholas|mateo|river|myles|silas|luca|dean|lorenzo|vincent|zane|archer|enzo|emmanuel|jonah|thiago|emiliano|messiah|kairo|zayn|remy|tucker|judah|hayden|luca|blaze|troy|koa|santino|kingsley|cassius|emory|nikolai|aldo|aurora|luna|nova|isabella|sophia|mia|charlotte|amelia|harper|evelyn|abigail|emily|elizabeth|mila|ella|avery|sofia|camila|aria|scarlett|victoria|madison|luna|grace|chloe|penelope|layla|riley|zoey|nora|lily|eleanor|hannah|lillian|addison|aubrey|ellie|stella|natalie|zoe|leah|hazel|violet|aurora|savannah|audrey|brooklyn|bella|claire|skylar|lucy|paisley|everly|anna|caroline|nova|genesis|emilia|kennedy|kinsley|allison|maya|sarah|madelyn|adeline|alexa|ariana|elena|gabriella|naomi|alice|hailey|eva|emery|iris|brielle|ruby|eliza|melanie|piper|rylie|jade|liliana|june|raelynn|delilah|vivian|clara|vanessa|jasmine|nyla|adalynn|olivia|emma|ava|sophia|isabella|mia|charlotte|amelia|evelyn|abigail|harper|emily|elizabeth|avery|sofia|ella|madison|scarlett|victoria|aria|grace|chloe|camila|penelope|riley|layla|lillian|nora|zoey|mila|aubrey|hannah|lily|addison|eleanor|natalie|luna|savannah|brooklyn|leah|zoe|stella|hazel|ellie|paisley|bella|naomi|audrey|skylar|violet|claire|aurora|lucy|caroline|genesis|emilia|kennedy|kinsley|allison|maya|sarah|madelyn|adeline|alexa|ariana|elena|gabriella|alice|hailey|eva|emery|iris|brielle|ruby|eliza|melanie|piper|jade|liliana|june|raelynn|delilah|vivian|clara|vanessa|jasmine|nyla|adalynn|olivia|emma|ava|sophia|isabella|mia|charlotte|amelia|evelyn|abigail|harper|emily|elizabeth|avery|sofia|ella|madison|scarlett|victoria|aria|grace|chloe|camila|penelope|riley|layla|lillian|nora|zoey|mila|aubrey|hannah|lily|addison|eleanor|natalie|luna|savannah|brooklyn|leah|zoe|stella|hazel|ellie|paisley|bella|naomi|audrey|skylar|violet|claire|aurora|lucy|caroline|genesis|emilia|kennedy|kinsley|allison|maya|sarah|madelyn|adeline|alexa|ariana|elena|gabriella|alice|hailey|eva|emery|iris|brielle|ruby|eliza|melanie|piper|jade|liliana|june|raelynn|delilah|vivian|clara|vanessa|jasmine|nyla|adalynn)/gi, function(match) {
+                        return match.charAt(0).toUpperCase() + match.slice(1).toLowerCase();
+                    });
+
+                return result;
             }
 
             function updateWordCount() {
@@ -453,8 +565,14 @@
 
             function updateTranscript() {
                 let html = '';
-                if (finalTranscript) {
-                    html += escapeHtml(finalTranscript);
+                let displayFinal = finalTranscript;
+
+                if (autoPunctuation) {
+                    displayFinal = addPunctuation(displayFinal);
+                }
+
+                if (displayFinal) {
+                    html += escapeHtml(displayFinal);
                 }
                 if (interimTranscript) {
                     html += '<span class="interim">' + escapeHtml(interimTranscript) + '</span>';
@@ -524,10 +642,14 @@
             });
 
             copyBtn.addEventListener('click', async function() {
-                const text = finalTranscript.trim();
+                let text = finalTranscript.trim();
                 if (!text) {
                     showToast('No text to copy');
                     return;
+                }
+
+                if (autoPunctuation) {
+                    text = addPunctuation(text);
                 }
 
                 try {
@@ -551,6 +673,14 @@
                     stopRecording();
                     setTimeout(startRecording, 300);
                 }
+            });
+
+            punctuationToggle.addEventListener('click', function() {
+                autoPunctuation = !autoPunctuation;
+                punctuationToggle.classList.toggle('active');
+                punctuationToggle.nextElementSibling.textContent = autoPunctuation ? 'ON' : 'OFF';
+                updateTranscript();
+                showToast(autoPunctuation ? 'Auto punctuation ON' : 'Auto punctuation OFF');
             });
 
             // Keyboard shortcut
