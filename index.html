@@ -1,5 +1,4 @@
-
-widget_html = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,19 +16,19 @@ widget_html = '''<!DOCTYPE html>
             background: #ffffff;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
         }
 
         .widget-container {
             width: 100%;
-            max-width: 480px;
-            background: #fafafa;
-            border: 1px solid #e3e3e3;
-            border-radius: 12px;
+            max-width: 420px;
+            background: #ffffff;
+            border: 1px solid #e6e6e6;
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
         .header {
@@ -37,71 +36,110 @@ widget_html = '''<!DOCTYPE html>
             margin-bottom: 20px;
         }
 
+        .header-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
         .header h1 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #37352f;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
             margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
 
         .header p {
             font-size: 13px;
-            color: #9ca3af;
+            color: #888888;
+        }
+
+        .language-select {
+            margin-bottom: 20px;
+        }
+
+        .language-select label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #555555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .language-select select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+            font-size: 14px;
+            color: #333333;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .language-select select:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: #ffffff;
+        }
+
+        .mic-section {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .mic-button {
-            width: 72px;
-            height: 72px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             border: none;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
+            margin: 0 auto 12px;
             transition: all 0.3s ease;
             position: relative;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
 
         .mic-button:hover {
-            background: #eeeeee;
-            transform: scale(1.05);
+            transform: scale(1.08);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
 
         .mic-button.recording {
-            background: #fee2e2;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
             animation: pulse 1.5s infinite;
-        }
-
-        .mic-button.recording svg {
-            stroke: #ef4444;
-            fill: #ef4444;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
         }
 
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
         .mic-button svg {
-            width: 32px;
-            height: 32px;
-            stroke: #6b7280;
+            width: 36px;
+            height: 36px;
+            stroke: #ffffff;
             fill: none;
-            stroke-width: 2;
+            stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
         }
 
         .status {
-            text-align: center;
             font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 16px;
+            font-weight: 600;
+            color: #666666;
             min-height: 20px;
-            font-weight: 500;
+            transition: color 0.3s;
         }
 
         .status.recording {
@@ -109,93 +147,88 @@ widget_html = '''<!DOCTYPE html>
         }
 
         .transcript-box {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
             padding: 16px;
-            min-height: 120px;
-            max-height: 300px;
+            min-height: 140px;
+            max-height: 280px;
             overflow-y: auto;
             font-size: 15px;
-            line-height: 1.6;
-            color: #374151;
+            line-height: 1.7;
+            color: #2d3436;
             margin-bottom: 16px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            transition: border-color 0.3s;
         }
 
         .transcript-box:empty::before {
             content: "Transcribed text will appear here...";
-            color: #9ca3af;
+            color: #adb5bd;
             font-style: italic;
         }
 
         .transcript-box.recording {
-            border-color: #ef4444;
-            background: #fef2f2;
+            border-color: #6366f1;
+            background: #f0f4ff;
         }
 
         .interim {
-            color: #9ca3af;
+            color: #868e96;
             font-style: italic;
         }
 
         .controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn {
             flex: 1;
-            padding: 10px 16px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            background: #ffffff;
-            color: #374151;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .btn:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
+            transform: translateY(-1px);
         }
 
         .btn:active {
             transform: scale(0.98);
         }
 
+        .btn-secondary {
+            background: #f1f3f5;
+            color: #495057;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
         .btn-primary {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
-            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
         }
 
         .btn-primary:hover {
-            background: #2563eb;
-            border-color: #2563eb;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-            border-color: #ef4444;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            border-color: #dc2626;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
         }
 
         .btn svg {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -205,17 +238,19 @@ widget_html = '''<!DOCTYPE html>
 
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #1f2937;
+            background: #1a1a2e;
             color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-size: 14px;
+            font-weight: 500;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
         .toast.show {
@@ -223,54 +258,37 @@ widget_html = '''<!DOCTYPE html>
             opacity: 1;
         }
 
-        .language-select {
-            margin-bottom: 16px;
-        }
-
-        .language-select label {
-            display: block;
-            font-size: 13px;
-            color: #6b7280;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .language-select select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            background: #ffffff;
-            font-size: 14px;
-            color: #374151;
-            cursor: pointer;
-        }
-
-        .language-select select:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-
         .error-message {
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            border-radius: 6px;
-            padding: 12px;
+            background: #fff5f5;
+            border: 1.5px solid #feb2b2;
+            border-radius: 10px;
+            padding: 14px;
             font-size: 13px;
-            color: #991b1b;
+            color: #c53030;
             margin-bottom: 16px;
             display: none;
+            font-weight: 500;
         }
 
         .error-message.show {
             display: block;
         }
+
+        .word-count {
+            text-align: right;
+            font-size: 11px;
+            color: #adb5bd;
+            margin-top: 6px;
+            font-weight: 500;
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="widget-container">
         <div class="header">
-            <h1>🎙️ Voice to Text</h1>
+            <div class="header-icon">🎙️</div>
+            <h1>Voice to Text</h1>
             <p>Click the mic to start recording</p>
         </div>
 
@@ -287,6 +305,7 @@ widget_html = '''<!DOCTYPE html>
                 <option value="it-IT">Italian</option>
                 <option value="pt-BR">Portuguese (Brazil)</option>
                 <option value="zh-CN">Chinese (Simplified)</option>
+                <option value="zh-TW">Chinese (Traditional)</option>
                 <option value="ja-JP">Japanese</option>
                 <option value="ko-KR">Korean</option>
                 <option value="ru-RU">Russian</option>
@@ -298,24 +317,35 @@ widget_html = '''<!DOCTYPE html>
                 <option value="vi-VN">Vietnamese</option>
                 <option value="th-TH">Thai</option>
                 <option value="id-ID">Indonesian</option>
+                <option value="sv-SE">Swedish</option>
+                <option value="da-DK">Danish</option>
+                <option value="fi-FI">Finnish</option>
+                <option value="no-NO">Norwegian</option>
+                <option value="el-GR">Greek</option>
+                <option value="he-IL">Hebrew</option>
+                <option value="cs-CZ">Czech</option>
+                <option value="hu-HU">Hungarian</option>
+                <option value="ro-RO">Romanian</option>
             </select>
         </div>
 
-        <button class="mic-button" id="micButton" title="Start/Stop Recording">
-            <svg viewBox="0 0 24 24" id="micIcon">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" y1="19" x2="12" y2="23"></line>
-                <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
-        </button>
-
-        <div class="status" id="status">Ready to record</div>
+        <div class="mic-section">
+            <button class="mic-button" id="micButton" title="Start/Stop Recording">
+                <svg viewBox="0 0 24 24" id="micIcon">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+            </button>
+            <div class="status" id="status">Ready to record</div>
+        </div>
 
         <div class="transcript-box" id="transcriptBox"></div>
+        <div class="word-count" id="wordCount"></div>
 
         <div class="controls">
-            <button class="btn" id="clearBtn">
+            <button class="btn btn-secondary" id="clearBtn">
                 <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                 Clear
             </button>
@@ -331,7 +361,6 @@ widget_html = '''<!DOCTYPE html>
     <script>
         (function() {
             const micButton = document.getElementById('micButton');
-            const micIcon = document.getElementById('micIcon');
             const status = document.getElementById('status');
             const transcriptBox = document.getElementById('transcriptBox');
             const clearBtn = document.getElementById('clearBtn');
@@ -339,20 +368,26 @@ widget_html = '''<!DOCTYPE html>
             const languageSelect = document.getElementById('language');
             const errorMessage = document.getElementById('errorMessage');
             const toast = document.getElementById('toast');
+            const wordCount = document.getElementById('wordCount');
 
             let recognition = null;
             let isRecording = false;
             let finalTranscript = '';
             let interimTranscript = '';
 
-            // Check for Speech Recognition support
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
+
             if (!SpeechRecognition) {
                 showError('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
                 micButton.disabled = true;
                 micButton.style.opacity = '0.5';
+                micButton.style.cursor = 'not-allowed';
                 return;
+            }
+
+            function updateWordCount() {
+                const words = finalTranscript.trim().split(/\s+/).filter(w => w.length > 0);
+                wordCount.textContent = words.length > 0 ? words.length + ' word' + (words.length === 1 ? '' : 's') : '';
             }
 
             function initRecognition() {
@@ -360,6 +395,7 @@ widget_html = '''<!DOCTYPE html>
                 recognition.continuous = true;
                 recognition.interimResults = true;
                 recognition.lang = languageSelect.value;
+                recognition.maxAlternatives = 1;
 
                 recognition.onstart = function() {
                     isRecording = true;
@@ -372,7 +408,7 @@ widget_html = '''<!DOCTYPE html>
 
                 recognition.onresult = function(event) {
                     interimTranscript = '';
-                    
+
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         const transcript = event.results[i][0].transcript;
                         if (event.results[i].isFinal) {
@@ -383,6 +419,7 @@ widget_html = '''<!DOCTYPE html>
                     }
 
                     updateTranscript();
+                    updateWordCount();
                 };
 
                 recognition.onerror = function(event) {
@@ -390,18 +427,21 @@ widget_html = '''<!DOCTYPE html>
                     if (event.error === 'not-allowed') {
                         showError('Microphone access denied. Please allow microphone permissions in your browser.');
                     } else if (event.error === 'no-speech') {
-                        showToast('No speech detected. Try speaking louder or closer to the mic.');
+                        showToast('No speech detected. Try speaking louder.');
                     } else if (event.error === 'network') {
                         showError('Network error. Please check your internet connection.');
+                    } else if (event.error === 'aborted') {
+                        // User stopped, ignore
                     } else {
                         showError('Error: ' + event.error);
                     }
-                    stopRecording();
+                    if (event.error !== 'aborted') {
+                        stopRecording();
+                    }
                 };
 
                 recognition.onend = function() {
                     if (isRecording) {
-                        // Auto-restart if still recording (handles pauses)
                         try {
                             recognition.start();
                         } catch(e) {
@@ -447,7 +487,7 @@ widget_html = '''<!DOCTYPE html>
                 }
                 micButton.classList.remove('recording');
                 transcriptBox.classList.remove('recording');
-                status.textContent = 'Recording stopped';
+                status.textContent = 'Recording stopped. Click mic to start.';
                 status.classList.remove('recording');
                 interimTranscript = '';
                 updateTranscript();
@@ -478,6 +518,7 @@ widget_html = '''<!DOCTYPE html>
                 finalTranscript = '';
                 interimTranscript = '';
                 transcriptBox.innerHTML = '';
+                wordCount.textContent = '';
                 status.textContent = 'Ready to record';
                 showToast('Text cleared');
             });
@@ -493,9 +534,10 @@ widget_html = '''<!DOCTYPE html>
                     await navigator.clipboard.writeText(text);
                     showToast('Copied to clipboard!');
                 } catch (err) {
-                    // Fallback
                     const textArea = document.createElement('textarea');
                     textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
                     document.body.appendChild(textArea);
                     textArea.select();
                     document.execCommand('copy');
@@ -511,7 +553,7 @@ widget_html = '''<!DOCTYPE html>
                 }
             });
 
-            // Keyboard shortcut: Space to toggle recording
+            // Keyboard shortcut
             document.addEventListener('keydown', function(e) {
                 if (e.code === 'Space' && e.target === document.body) {
                     e.preventDefault();
@@ -521,11 +563,4 @@ widget_html = '''<!DOCTYPE html>
         })();
     </script>
 </body>
-</html>'''
-
-# Save to output directory
-with open('/mnt/agents/output/voice-to-text-widget.html', 'w', encoding='utf-8') as f:
-    f.write(widget_html)
-
-print("Widget created successfully!")
-print(f"File size: {len(widget_html)} characters")
+</html>
